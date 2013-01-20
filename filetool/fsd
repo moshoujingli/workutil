@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "These are files you want. Bi Xiaopeng"|mutt -s "Files you want" $1 -a $2

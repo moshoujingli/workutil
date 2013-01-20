@@ -1,0 +1,5 @@
+#!/bin/bash
+declare -i ff_index;
+ff_index=0;
+find . -name $* 2>/dev/null|while read line;do echo [$ff_index]$PWD`echo $line|sed "s/^\.//g"`;ff_index=ff_index+1;done>/tmp/file_list
+fl;

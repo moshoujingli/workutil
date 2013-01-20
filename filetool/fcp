@@ -1,0 +1,4 @@
+#!/bin/bash
+F_PATH=`fp $1`;
+F_NAME=`echo $F_PATH|sed "s/.*\/\(.*\)$/\1/"`;
+cp $F_PATH /tmp/$F_NAME;

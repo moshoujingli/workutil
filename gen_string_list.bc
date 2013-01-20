@@ -1,0 +1,10 @@
+#!/bin/bash
+for filename in `ls $1|grep string`;do
+	cat $1$filename|while read line;do
+		ITEM_LINE=`echo $line|grep "string\s*name"`;
+		if [ -n "$ITEM_LINE" ]
+		then
+			echo $ITEM_LINE|sed 's/<string\s*name=\"\(.*\)\">\(.*\)<\/string>/\1\|\#\|\2/g'
+		fi
+	done
+done

@@ -1,0 +1,7 @@
+#!/bin/bash
+TEMPFILE="/tmp/stringdlist"
+touch $TEMPFILE
+./gen_string_list.bc $1>$TEMPFILE
+./gen_string_list.bc $2>>$TEMPFILE
+cat $TEMPFILE|./map_gen.py
+rm $TEMPFILE

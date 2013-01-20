@@ -1,0 +1,2 @@
+#!/bin/bash
+diff $1 $2 |grep "^> \b"|sed -e "s/^> /<string name=\"/g" -e "s/|#|/\">/g" -e "s/.$/<\/string>/g"

@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "#custom prefs">>~/.bashrc
+echo "PATH=\$PATH:~/util/bash">>~/.bashrc
+source ~/.bashrc

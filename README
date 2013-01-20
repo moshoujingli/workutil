@@ -1,0 +1,18 @@
+Intro
+
+This project is build for the teams that need to build a app for various language.
+I hold the assumption that while we want to change one string ,we need to delete it in all /res/value-*/strings.xml,and append to /res/value/strings.xml,at last we give out the /res/various/string.xml to the interrupter to generate the other /res/value-otherlan/strings.xml
+
+The format stringID|#|stringContent is passed these scripts.
+
+Now this proj have three script , the gen_string_list.bc is used to generate list as stringId|#|stringContent,it received a path as /res/value/ (need the last /) it will go over all the files which name contains string,and give out a list in format above.The map_gen.py received the list in format above,and put each line in one (id,content) map.So if two string have same id,the last will remain.
+
+The list_gen.bc received two path formated as the gen_string_list.bc,the strings in the second path will cover the first,and generate a list of the format above.
+
+Ususally,I use this in this format ./list_gen /res/value/ /res/value-zh-CN/ ,so a list of chinese strings will be generated.
+
+Then ,we named the list in a unique name,and send it to my editor,the editor can change several lines he want.And send it back to me.
+Then the "./difflist file_orign file_edit" will find out what lines changed,and out put it in the format.
+<string name="id">content</string>
+At last,used the script delete_string by id to delete all string have the id in the list.And you should append the list generated above step to the file u want.
+
