@@ -1,2 +1,2 @@
 #!/bin/bash
-cat /tmp/file_list|grep [$1]|sed "s/\[$1\]//"
+fl|grep "\[$1\]"|sed "s/\[$1\]//"
