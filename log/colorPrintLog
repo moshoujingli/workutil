@@ -1,0 +1,26 @@
+#!/bin/bash
+color_list=(31 32 33 34 35)
+info=1;
+warn=2;
+debu=3;
+erro=0;
+end_flag=0;
+warning_level="debu";
+color=${color_list[$warning_level]};
+tail -f $1|
+while read line;
+do 
+	if  test $end_flag -eq 1 ;then
+		#new log block
+		end_flag=0;
+		#set color by level
+		warning_level="${line:25:4}"
+		color=${color_list[$warning_level]};
+		#decide if close this block by level and tag
+	fi;
+
+	if [ "$line" = "=====================" ];then
+		end_flag=1;	
+	fi;
+	echo -e "\033[0"$color"m"$line" \033[0m";
+done
