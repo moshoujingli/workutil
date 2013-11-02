@@ -5,22 +5,76 @@ warn=2;
 debu=3;
 erro=0;
 end_flag=0;
+show_flag=0;
 warning_level="debu";
 color=${color_list[$warning_level]};
-tail -f $1|
+file_name="./n2my.log";
+tag_content="";
+level_set="all";
+while getopts "f:t:l:" arg; do
+	case $arg in
+			f )
+				echo "Logfile is:$OPTARG."
+				file_name=$OPTARG;
+				;;
+			t )
+				echo "Tag filter is:$OPTARG"
+				tag_content=$OPTARG;
+				;;
+			l )
+				echo "Level filter setting is:$OPTARG"
+				level_set=$OPTARG;
+				;;
+			?)
+			echo "unknow args";
+			exit 1
+			;;
+		esac
+done
+
+
+
+tail -f $file_name|
 while read line;
 do 
 	if  test $end_flag -eq 1 ;then
 		#new log block
 		end_flag=0;
+		show_flag=0;
 		#set color by level
 		warning_level="${line:25:4}"
 		color=${color_list[$warning_level]};
-		#decide if close this block by level and tag
+		#decide if close this block by tag
+		if [  "$tag_content" ]; then
+			have_tag=`echo "$line"|grep "$tag_content"`;
+			if [ "$have_tag" ]; then
+				show_flag=1;
+			fi
+		else
+			show_flag=1;
+		fi
+		#level check
+		if [ "$level_set" != "all" ]; then
+			hit="";
+			for level_show in $level_set; do
+				sc_level=${level_show:0:4};
+				if [ "$sc_level" = "$warning_level" ]; then
+					hit="1";
+					break;
+				fi
+			done
+			if [ -z $hit ]; then
+				#is not the level wanted
+				show_flag=0;
+			fi
+		fi
+
 	fi;
 
 	if [ "$line" = "=====================" ];then
 		end_flag=1;	
 	fi;
-	echo -e "\033[0"$color"m"$line" \033[0m";
+	if [ $show_flag -eq 1 ]; then
+		echo -e "\033[0"$color"m"$line" \033[0m";
+	fi
 done
