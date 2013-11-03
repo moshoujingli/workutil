@@ -1,0 +1,54 @@
+#!/bin/bash
+show_flag=0;
+end_flag=0;
+read_buffer=""
+e_msg_pre_count=0;
+tail -f "$1"|
+while read line;
+do 
+	read_buffer=$read_buffer"$line\n";
+
+	if [[ e_msg_pre_count -eq 2 ]]; then
+		e_msg_pre_count=0;
+		echo -e "\033[032m[Error Info] \033[0m\n$line";
+		while read shit; do
+			if [[ "$shit" = "--" ]]; then
+				break;
+			fi
+			echo $shit;
+		done
+		continue;
+	fi
+	if [[ "$line" = "--" ]]; then
+		((e_msg_pre_count=$e_msg_pre_count+1));
+		continue;
+	fi
+
+	if [ "$line" = "=====================" ];then
+		end_flag=1;	
+		e_msg_pre_count=0;
+		error_id=`echo $read_buffer|md5sum`
+		echo -e $read_buffer>>"/tmp/$error_id";
+		echo -e "\033[031m[Error Id] \033[0m\n$error_id\n====================="
+		#\033[031m Error! \033[0m\n[error trace]:\n
+		read_buffer="";
+		continue;
+	fi;
+
+	start_char=${line:0:1};
+	if [[ "$start_char" != "/" ]]; then
+		continue;
+	fi
+	is_trace_start=`echo "$line"|grep -F "lib/EZLib/EZCore/EZLogger2.class.php - [ error ] -" -c`;
+	if [[ is_trace_start -eq 1 ]]; then
+		echo -e "\033[033m[Error Trace] \033[0m";
+		continue;
+	fi
+	matched_trace_line=`echo "$line"|grep -P "^/.*? - \[ \w+ \] - \d+$"`;
+	if [ "$matched_trace_line" ]; then
+		echo $line;
+	fi
+	# if [ $show_flag -eq 1 ]; then
+	# 	echo -e "\033[0"$color"m"$line" \033[0m";
+	# fi
+done
