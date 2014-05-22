@@ -1,4 +1,9 @@
 #!/bin/bash
 echo "#custom prefs">>~/.bashrc
-echo "PATH=\$PATH:~/util/bash">>~/.bashrc
+echo "alias ll='ls -l --color=tty'">>~/.bashrc
+echo "alias tl='tail -f'">>~/.bashrc
+echo "alias gf='grep --color -Fnr'">>~/.bashrc
+echo "alias pic='nc -w 1 -v -z '">>~/.bashrc
+echo "alias go='sh /vagrant/go_cd_alias.sh'">>~/.bashrc
+echo "alias mk='. /vagrant/mk_tag_alias.sh'">>~/.bashrc
 source ~/.bashrc
